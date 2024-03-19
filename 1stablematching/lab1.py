@@ -28,14 +28,15 @@ def gs():
 def gs2():
   students, companies = parse2()
 
-  print(students)
-  print(companies)
+
+  print("Students", students)
+  # print(companies)
   unmatched_students = list(students)
   matches = {}
 
   while unmatched_students:
-    # print("unmatched students: ", unmatched_students)
-    # print("matches: ", matches)
+    print("unmatched students: ", unmatched_students)
+    print("matches: ", matches)
     current_student = unmatched_students.pop(0)
     student_companies = students.get(current_student)
 
@@ -45,7 +46,7 @@ def gs2():
         break
 
       elif companies[comp].index(matches[comp]) < companies[comp].index(current_student):
-        # print("comp ", matches[comp])
+        print("comp ", matches[comp])
         unmatched_students.append(matches[comp])
         matches[comp] = current_student
         
@@ -58,7 +59,7 @@ def gs2():
   printMatches(matches)   
 
 def printMatches(matches):
-  # print(matches)
+  print(matches)
   for i in range(len(matches)):
     print(matches[i +1])
 
