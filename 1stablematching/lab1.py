@@ -12,25 +12,28 @@ def gs():
   while unmatched_students:
     current_student = unmatched_students.pop()
     student_companies = students.get(current_student)
+    print("student: ", current_student)
+    print("stud comps: ", student_companies)
 
     for comp in student_companies:
-      if comp not in matches:
+      if current_student not in matches.values():
         matches[comp] = current_student
         break
-        
-      elif companies[comp].index(matches[comp]) < companies[comp].index(current_student) :
+
+      elif companies[comp].index(matches[comp]) < companies[comp].index(current_student):
         unmatched_students.append(matches[comp])
         matches[comp] = current_student
-        break
     
-    if current_student not in matches:
-      unmatched_students.append(current_student) 
+    if current_student not in matches: 
+      unmatched_students.append(current_student)
+    print("matches ", matches) 
+
   printMatches(matches)   
 
 def printMatches(matches):
-  sorted_matches = sorted(matches.keys())
-  for value in sorted_matches:
-    print(value)
+  print(matches)
+  for i in range(len(matches)):
+    print(matches[i +1])
 
 
     
