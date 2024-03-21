@@ -7,17 +7,41 @@
 \pagestyle{empty}
 
 \title{Stable Matching Report}
-\author{Author 1 and Author 2}
+\author{Isak och Erik}
 
 \begin{document}
   \maketitle
 
   \section{Results}
 
-  \todo[inline]{Briefly comment the results, did the script say all your solutions were correct? Approximately how long time does it take for the program to run on the largest input? What takes the majority of the time?}
+  Correct solutions, all in all about 27 seconds to run check\_solutions using pypy. The parsing takes the most time by far, just about 90\% of execution time is parsing.
+  Largest input takes about 2 seconds using.
 
   \section{Implementation details}
 
-  \todo[inline]{How did you implement the solution? Which data structures were used? Which modifications to these data structures were used? What is the overall running time? Why?}
+  We parse using list comprehension, splitting input into two dictionaries of students and companies. We loop over a list of unmatched students,
+  and iterate over companies for each unmatched student in the list. 
+
+  \section{Lab questions}
+
+  \subsection{Why does your algorithm obtain a stable solution?}
+
+  When the algorithm terminates, no student company pair will prefer each other more than the final match. 
+
+  \subsection{Could there be other stable solutions?}
+
+  There is a possibility for other stable solutions, such as solutions with overall less satisifed pairs.
+
+  \subsection{What is the time complexity and why?}
+
+  The time complexity is $O({n}^2)$. Setting up the datastructures takes $O(n)$, and the algorithm itself also takes $O({n}^2)$.
+
+  \subsection{Are there any applications of the algorithm (as it is or in a slightly shifted verison)?}
+
+  Dating app hinge uses the algorithm. 
+  Planning shifts -- jobba på bruged
+
+
+
 
 \end{document}
