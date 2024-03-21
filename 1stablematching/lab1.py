@@ -1,42 +1,23 @@
 import sys
+import numpy as np
 
 def main():
-  gs2()
-  
-  
-def gs():
-  students, companies = parse2()
-  unmatched_students = list(students)
-  matches = {}
-  
-  while unmatched_students:
-    current_student = unmatched_students.pop(0)
-    student_companies = students.get(current_student)
-    current_index = 0
-    current_company = student_companies[current_index]
-    
-    if current_company not in matches:
-      matches[current_company] = current_student
-    elif companies[current_company].index(current_student) > companies[current_company].index(matches[current_company]):
-      old_student = matches[current_company]
-      matches[current_company] = current_student
-      unmatched_students.append(old_student)
-    else:
-      unmatched_students.append(current_student)
-    current_index += 1
+  #gs2()
+  parse3()
+
 
 def gs2():
   students, companies = parse2()
 
 
-  print("Students", students)
+  #print("Students", students)
   # print(companies)
   unmatched_students = list(students)
   matches = {}
 
   while unmatched_students:
-    print("unmatched students: ", unmatched_students)
-    print("matches: ", matches)
+    #print("unmatched students: ", unmatched_students)
+    #print("matches: ", matches)
     current_student = unmatched_students.pop(0)
     student_companies = students.get(current_student)
 
@@ -46,7 +27,7 @@ def gs2():
         break
 
       elif companies[comp].index(matches[comp]) < companies[comp].index(current_student):
-        print("comp ", matches[comp])
+        #print("comp ", matches[comp])
         unmatched_students.append(matches[comp])
         matches[comp] = current_student
         
@@ -59,12 +40,31 @@ def gs2():
   printMatches(matches)   
 
 def printMatches(matches):
-  print(matches)
+  #print(matches)
   for i in range(len(matches)):
     print(matches[i +1])
 
 
-    
+
+def parse3():
+  students = dict()
+  companies = dict()
+  inp = sys.stdin.read()
+  inp = [int(x) for x in inp.split()]
+  N = inp[0]
+  inp.pop(0)
+  
+  for i in range(0, len(inp), N + 1):
+    row = inp[i:i+N+1]
+    index = row[0]
+
+    if index not in companies:
+      companies[index] = row[1:]
+    else:
+      students[index] = row[1:]
+  print("Students: ", students)
+  print("Companies: ", companies)   
+  return students, companies  
   
 def parse():
   students = dict()
