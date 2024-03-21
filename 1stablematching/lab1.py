@@ -1,33 +1,39 @@
 import sys
-import numpy as np
+import time
 
 def main():
-  #gs2()
-  parse3()
+  t1 = time.time()
+  gs()
+  print(time.time() - t1)
 
 
-def gs2():
-  students, companies = parse2()
+def gs():
+  students, companies = parse()
 
 
   #print("Students", students)
   # print(companies)
   unmatched_students = list(students)
   matches = {}
-
   while unmatched_students:
-    #print("unmatched students: ", unmatched_students)
-    #print("matches: ", matches)
+    # print("unmatched students: ", unmatched_students)
+    # print("matches: ", matches)
     current_student = unmatched_students.pop(0)
+    # print("current student: ", current_student)
     student_companies = students.get(current_student)
+    # print("student's companies: ", student_companies)
 
     for comp in student_companies:
+      #print("Company list:", comp, " ", companies[comp])
+      #print(comp not in matches)
       if comp not in matches:
         matches[comp] = current_student
         break
 
-      elif companies[comp].index(matches[comp]) < companies[comp].index(current_student):
-        #print("comp ", matches[comp])
+      #print("nuvarande match:" , companies[comp].index(matches[comp]))
+      #print("potentiell match: ", companies[comp].index(current_student))
+      if companies[comp].index(matches[comp]) > companies[comp].index(current_student):
+        # print("comp ", matches[comp])
         unmatched_students.append(matches[comp])
         matches[comp] = current_student
         
@@ -35,7 +41,8 @@ def gs2():
     
     if current_student not in matches.values():
       unmatched_students.append(current_student)
-    # print("slut", matches)
+    #print("slut", matches)
+    #print("----------------")
 
   printMatches(matches)   
 
@@ -46,7 +53,7 @@ def printMatches(matches):
 
 
 
-def parse3():
+def parse():
   students = dict()
   companies = dict()
   inp = sys.stdin.read()
@@ -61,50 +68,7 @@ def parse3():
     if index not in companies:
       companies[index] = row[1:]
     else:
-      students[index] = row[1:]
-  print("Students: ", students)
-  print("Companies: ", companies)   
+      students[index] = row[1:]  
   return students, companies  
-  
-def parse():
-  students = dict()
-  companies = dict()
-  inp = sys.stdin
-  print(inp)
-  N = int(next(sys.stdin))
-  for idx, line in enumerate(sys.stdin):
-    line = line.rstrip().split(" ")
-    temp_line = [int(x) for x in line[1:]]
-    if idx < N:
-      students[idx +1] = temp_line
-    else:
-      companies[idx + 1 - N] = temp_line
-  print(students)
-  print(companies)
-  return students, companies
-
-  
-def parse2():
-  students = dict()
-  companies = dict()
-  inp = sys.stdin.read()
-  N = int(inp[0])
-  char_idx = 0
-  for char in inp[1:]:
-    if char.isdigit():
-      if char_idx == 0:
-        preferences = []
-        stu_comp = int(char)
-      else:
-        preferences.append(int(char))
-      char_idx += 1
-      if char_idx == N +1:
-        if stu_comp not in students:
-          students[stu_comp] = preferences
-        else:
-          companies[stu_comp] = preferences
-        char_idx = 0
-
-  return students, companies
 
 main()
