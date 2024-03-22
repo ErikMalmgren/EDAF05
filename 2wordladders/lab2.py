@@ -3,7 +3,6 @@ import sys
 def main():
   nodes, queries = parse()
   graph = build_graph(nodes)
-  print(graph)
   for i in range(0, len(queries), 2):
     starting_word = queries[i:i+1][0]
     ending_word = queries[i+1:i+2][0]
@@ -19,18 +18,17 @@ def bfs(graph, starting_word, ending_word):
   visited.add(starting_word)
   distance = 1
   while len(queue) != 0:
-    v = queue.pop(0)
-    for neighbor in graph[v]:
-      print(neighbor)
-      if neighbor not in visited:
-        visited.add(neighbor)
-        queue.append(neighbor)
-      if neighbor == ending_word:
-        # print(neighbor, ending_word)
-        return(distance)
+    layer = len(queue)
+    for _ in range(layer):
+      v = queue.pop(0)
+      for neighbor in graph[v]:
+        if neighbor not in visited:
+          visited.add(neighbor)
+          queue.append(neighbor)
+        if neighbor == ending_word:
+          # print(neighbor, ending_word)
+          return(distance)
     distance += 1
-    print("--------------")
-
   return("Impossible")   
     
 def parse():
