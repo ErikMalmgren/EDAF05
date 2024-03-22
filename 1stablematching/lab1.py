@@ -1,5 +1,4 @@
 import sys
-import time
 
 def main():
   gs()
@@ -31,14 +30,12 @@ def printMatches(matches):
     print(matches[i +1])
 
 
-
 def parse():
   students = dict()
   companies = dict()
   inp = sys.stdin.read()
   inp = [int(x) for x in inp.split()]
-  N = inp[0]
-  inp.pop(0)
+  N =  inp.pop(0)
   
   for i in range(0, len(inp), N + 1):
     row = inp[i:i+N+1]
