@@ -26,7 +26,6 @@ def bfs(graph, starting_word, ending_word):
           visited.add(neighbor)
           queue.append(neighbor)
         if neighbor == ending_word:
-          # print(neighbor, ending_word)
           return(distance)
     distance += 1
   return("Impossible")   
@@ -52,7 +51,6 @@ def build_graph(nodes):
       
 
 def check_if_edge(node1, node2):
-  # edge om all of the last four letters in node1 are present in node2
   four_last = node1[-4:]
   for char in four_last:
     if node2.count(char) < four_last.count(char):
