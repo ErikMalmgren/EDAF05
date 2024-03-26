@@ -16,11 +16,11 @@ def gs():
       if comp not in matches:
         matches[comp] = current_student
         break
-
-      if companies[comp].index(matches[comp]) > companies[comp].index(current_student):
+      
+      if companies[comp][matches[comp]] > companies[comp][current_student]:
         unmatched_students.append(matches[comp])
         matches[comp] = current_student
-        break
+        break 
 
 
   printMatches(matches)   
@@ -42,9 +42,15 @@ def parse():
     index = row[0]
 
     if index not in companies:
-      companies[index] = row[1:]
+      pref_list = [-1] * (N + 1) # tom lista med n + 1 platser
+      idx = 0
+      for s in row[1:]:
+        pref_list[s] = idx
+        idx += 1
+      companies[index] = pref_list
     else:
-      students[index] = row[1:]  
+      students[index] = row[1:]
+  
   return students, companies  
 
 main()

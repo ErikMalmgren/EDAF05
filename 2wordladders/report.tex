@@ -14,10 +14,17 @@
 
   \section{Results}
 
-  \todo[inline]{Briefly comment the results, did the script say all your solutions were correct? Approximately how long time does it take for the program to run on the largest input? What takes the majority of the time?}
+  Parsing takes hella time, bfs supa fast.
 
   \section{Implementation details}
 
-  \todo[inline]{How did you implement the solution? Which data structures were used? Which modifications to these data structures were used? What is the overall running time? Why?}
+  We used BFS to find the shortest path. To build the graph, we parse input and build the graph as a adjacency matrix represented by a dict.
+  The overall running time was about 7 seconds. 
+
+  \section{Time complexity}
+
+  The BFS time complexity is $O(n + m)$, where n is the number of nodes and m is the nodes in the node's adjacency matrix. 
+  Our implementation is correct, since it visits each node exactly one time. 
+
 
 \end{document}
