@@ -7,7 +7,6 @@ def main():
   res = sum([v for k, v in mst.values()])
   print(res)
 
-
 def parse():
   inp = sys.stdin.read().split('\n')
   num_people, num_pairs = inp.pop(0).split(" ")
@@ -35,11 +34,9 @@ def prim(graph):
       visited.add(neighbor)
       tree[neighbor] = (root, weight)
       root = neighbor
-      # print(tree)
       for n, w in graph[neighbor]:
         if n not in visited:
           heappush(queue, (w, n))
-    
   
   return tree
   
