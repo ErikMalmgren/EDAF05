@@ -14,7 +14,6 @@ def parse():
     graph.setdefault(v, []).append((u, w))
   return graph
 
-
 def prim(graph):
   tree = {}
   visited = set()
