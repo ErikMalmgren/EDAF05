@@ -1,9 +1,12 @@
 import sys
-import heapq
+from heapq import heappop, heappush
 
 def main():
   graph = parse()
-  prim(graph)
+  mst = prim(graph)
+  res = sum([v for k, v in mst.values()])
+  print(res)
+
 
 def parse():
   inp = sys.stdin.read().split('\n')
@@ -18,12 +21,27 @@ def parse():
 
 def prim(graph):
   tree = {}
-  queue = heapq.heapify(graph.keys())
   visited = set()
-  root = queue.pop()
   
+  root = next(iter(graph))
+  visited.add(root)
+  queue = [(neighbor, weight) for weight, neighbor in graph[root]]
+  queue.sort()
+  heappush(queue, (float('inf'), None))
+
+  while queue:
+    weight, neighbor = heappop(queue)
+    if neighbor and neighbor not in visited:
+      visited.add(neighbor)
+      tree[neighbor] = (root, weight)
+      root = neighbor
+      # print(tree)
+      for n, w in graph[neighbor]:
+        if n not in visited:
+          heappush(queue, (w, n))
+    
   
-  
+  return tree
   
   
 main()
