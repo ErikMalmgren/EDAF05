@@ -1,4 +1,5 @@
 import sys
+from collections import deque
 
 def main():
   nodes, queries = parse()
@@ -12,7 +13,7 @@ def main():
 def bfs(graph, starting_word, ending_word):
   if starting_word == ending_word:
     return 0
-  queue = []
+  queue = deque()
   queue.append(starting_word)
   visited = set()
   visited.add(starting_word)
@@ -20,7 +21,7 @@ def bfs(graph, starting_word, ending_word):
   while len(queue) != 0:
     layer = len(queue)
     for _ in range(layer):
-      v = queue.pop(0)
+      v = queue.popleft()
       for neighbor in graph[v]:
         if neighbor not in visited:
           visited.add(neighbor)
