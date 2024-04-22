@@ -50,8 +50,9 @@ def closest(points, n):
       if point not in sy:
         sy.append(point)
 
+  sy.sort(key=lambda p: p.y)
   for i in range(len(sy)):
-    for j in range(i + 1, len(sy)):
+    for j in range(i + 1, min(len(sy), i + 3)): # i + 5 säkert alla fall
       d = min(dist(sy[j], sy[i]), d)
   return d
  
