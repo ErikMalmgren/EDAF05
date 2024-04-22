@@ -51,8 +51,9 @@ def closest(points, n):
         sy.append(point)
 
   sy.sort(key=lambda p: p.y)
-  for i in range(len(sy)):
-    for j in range(i + 1, min(len(sy), i + 3)): # i + 5 säkert alla fall
+  pog = len(sy)
+  for i in range(pog):
+    for j in range(i + 1, min(pog, i + 3)): # i + 5 säkert alla fall
       d = min(dist(sy[j], sy[i]), d)
   return d
  
