@@ -1,5 +1,6 @@
 import sys
-from heapq import heappop, heappush
+from heapq import heappop, heappush, heapify
+
 
 
 def main():
@@ -17,18 +18,19 @@ def parse():
 def prim(graph):
   tree = {}
   visited = set()
-  root = next(iter(graph))
-  visited.add(root)
-  queue = [(neighbor, weight) for weight, neighbor in graph[root]]
-  queue.sort()
-  heappush(queue, (float('inf'), None))
+  current = next(iter(graph))
+  visited.add(current)
+
+  queue = []
+  for neighbor, weight in graph[current]:
+    heappush(queue, (weight, neighbor))
 
   while queue:
     weight, neighbor = heappop(queue)
-    if neighbor and neighbor not in visited:
+    if neighbor not in visited:
       visited.add(neighbor)
-      tree[neighbor] = (root, weight)
-      root = neighbor
+      tree[neighbor] = (current, weight)
+      current = neighbor
       for n, w in graph[neighbor]:
         if n not in visited:
           heappush(queue, (w, n))
