@@ -1,1 +1,6 @@
 *.pdf
+*.in
+*.ans
+*.out
+*.verd
+*.prof
