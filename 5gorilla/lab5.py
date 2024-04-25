@@ -3,7 +3,6 @@ import sys
 def main():
   alphabet, matrix, queries = parse()
   gap_score = -4
-  memo = {}
   for q in queries:
     res = needleman_wunsch(q[0], q[1], gap_score, alphabet, matrix)
     print(res[0] + " " + res[1])
@@ -20,15 +19,16 @@ def parse():
     queries.append(q.split())
   return alphabet, matrix, queries
 
-def match_score(c1, c2, gap_score, alphabet, matrix):
-  if c1 == '*' or c2 == '*':
-    return gap_score
-  else:
-    i = alphabet.index(c1)
-    j = alphabet.index(c2)
-    return matrix[i][j]
+def precalculate_index(alphabet):
+  idx = {}
+  for i in range(len(alphabet)):
+    idx[alphabet[i]] = i
+  return idx
+
+def match_score(c1, c2, idx, matrix):
+  return matrix[idx[c1]][idx[c2]]
   
-def create_score_matrix(string1, string2, gap_score, alphabet, matrix):
+def create_score_matrix(string1, string2, gap_score, idx, matrix):
   score_matrix = []
   for i in range(len(string2) + 1):
     l = []
@@ -43,7 +43,7 @@ def create_score_matrix(string1, string2, gap_score, alphabet, matrix):
         
   for i in range(1, len(string2) + 1):
     for j in range(1, len(string1) + 1):
-      match = score_matrix[i - 1][j - 1] + match_score(string1[j - 1], string2[i - 1], gap_score, alphabet, matrix)
+      match = score_matrix[i - 1][j - 1] + match_score(string1[j - 1], string2[i - 1], idx, matrix)
       insert = score_matrix[i][j - 1] + gap_score
       delete = score_matrix[i - 1][j] + gap_score
       score_matrix[i][j] = max(match, insert, delete)
@@ -51,9 +51,8 @@ def create_score_matrix(string1, string2, gap_score, alphabet, matrix):
   return score_matrix
 
 def needleman_wunsch(string1, string2, gap_score, alphabet, matrix):
-  # if (string1, string2) in memo:
-    # return memo[(string1, string2)]
-  score = create_score_matrix(string1, string2, gap_score, alphabet, matrix)
+  idx = precalculate_index(alphabet)
+  score = create_score_matrix(string1, string2, gap_score, idx, matrix)
   res1 = ''
   res2 = ''
   i = len(string2)
@@ -65,7 +64,7 @@ def needleman_wunsch(string1, string2, gap_score, alphabet, matrix):
     score_up = score[i][j-1]       
     score_left = score[i-1][j]
     
-    if score_current == score_diagonal + match_score(string1[j-1], string2[i-1], gap_score, alphabet, matrix):
+    if score_current == score_diagonal + match_score(string1[j-1], string2[i-1], idx, matrix):
       res1 += string1[j-1]
       res2 += string2[i-1]
       i -= 1
@@ -79,7 +78,6 @@ def needleman_wunsch(string1, string2, gap_score, alphabet, matrix):
       res2 += string2[i-1]
       i -= 1
 
-  # Finish tracing up to the top left cell
   while j > 0:
     res1 += string1[j-1]
     res2 += '*'
