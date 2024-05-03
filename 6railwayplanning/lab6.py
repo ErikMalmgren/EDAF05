@@ -1,33 +1,54 @@
 import sys
 
-class Edge():
-  def  __init__(self, node1, node2, capacity, flow, activated) -> None:
+class Edge:
+  def  __init__(self, node1, node2, capacity):
     self.node1 = node1
     self.node2 = node2
     self.capacity = capacity
-    self.flow = flow
-    self.activated = activated
+    self.flow = 0
+    self.activated = False
+  
+  def __str__(self):
+    return "Node1: {} Node2: {} capacity: {} flow: {} activated: {}".format(self.node1.label, self.node2.label, self.capacity, self.flow, self.activated)
+    
+class Node:
+  def __init__(self, label):
+    self.label = label
+    self.height = 0
+    self.edges = []
 
+  def __str__(self):
+    return "Node: {}, Height: {}".format(self.label, self.height)
 
 def main():
-  graph, routes_to_remove = parse()
-  preflow_push(graph, routes_to_remove)
+  edges, nodes, routes_to_remove = parse()
+  preflow_push(edges, nodes, routes_to_remove)
   
 def parse():
   inp = sys.stdin.read().strip().split('\n')
   first_line = inp.pop(0).split()
   nbr_of_nodes, nbr_of_edges, nbr_of_students, nbr_of_routes = map(int, first_line[:4])
-  graph = {}
+  edges = []
+  nodes = []
   for i in range(nbr_of_edges):
     u, v, c = map(int, inp[i].split())
-    graph.setdefault(u, []).append((v, c))
-    graph.setdefault(v, []).append((u, c))
+    node1 = Node(u)
+    node2 = Node(v)
+    edge = Edge(node1, node2, c)
+    node1.edges.append(edge)
+    node2.edges.append(edge)
+    edges.append(edge)
+    if node1.label not in [node.label for node in nodes]:
+      nodes.append(node1)
+    if node2.label not in [node.label for node in nodes]:
+      nodes.append(node2)
   routes_to_remove = []
   for i in range(nbr_of_edges, nbr_of_edges + nbr_of_routes):
     routes_to_remove.append(int(inp[i]))
-  return graph, routes_to_remove
+  return edges, nodes, routes_to_remove
 
-def preflow_push(graph, routes_to_remove):
-  pass
-
+def preflow_push(edges, nodes, routes_to_remove):
+  edges[0].flow = edges[0].capacity
+  for node in nodes[1:]:
+    node.height = len(nodes)
 main()
