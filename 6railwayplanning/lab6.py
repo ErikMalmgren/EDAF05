@@ -49,6 +49,19 @@ def parse():
 
 def preflow_push(edges, nodes, routes_to_remove):
   edges[0].flow = edges[0].capacity
-  for node in nodes[1:]:
-    node.height = len(nodes)
+
+  nodes[0].height = len(nodes)
+  for node in nodes[:1]:
+    node.height = 0
+
+  for edge in nodes[0].edges:
+    edge.flow = edge.capacity
+
+  for edge in edges:
+    print(edge)
+    if edge.node1.label != nodes[0].label and edge.node2.label != nodes[0].label:
+      edge.flow = 0
+  
+  
+
 main()
