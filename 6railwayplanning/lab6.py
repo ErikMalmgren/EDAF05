@@ -58,9 +58,41 @@ def preflow_push(edges, nodes, routes_to_remove):
     edge.flow = edge.capacity
 
   for edge in edges:
-    print(edge)
     if edge.node1.label != nodes[0].label and edge.node2.label != nodes[0].label:
       edge.flow = 0
+
+  nodes_with_positive_ef = [node for node in nodes[:-1] if ef(node) > 0]
+
+  while nodes_with_positive_ef:
+    v = nodes_with_positive_ef.pop(0)
+    for edge in nodes.edges:
+      w = edge.node2
+      if v.height > w.height:
+        push(edge)
+      else:
+        relabel()
+    
+    nodes_with_positive_ef = [node for node in nodes[:-1] if ef(node) > 0]
+  
+  return 0
+  
+
+def push(edge):
+  
+  
+
+def relabel(h, f, v):
+  
+      
+def ef(node):
+  sum = 0
+  for edge in node.edges:
+    if edge.node1 == node:
+      sum -= edge.flow
+    else:
+      sum += edge.flow
+  return sum
+
   
   
 
