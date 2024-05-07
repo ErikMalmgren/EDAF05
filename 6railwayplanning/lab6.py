@@ -22,7 +22,7 @@ class Node:
 
 def main():
   edges, nodes, routes_to_remove = parse()
-  preflow_push(edges, nodes, routes_to_remove)
+  print(preflow_push(edges, nodes, routes_to_remove))
   
 def parse():
   inp = sys.stdin.read().strip().split('\n')
@@ -62,27 +62,40 @@ def preflow_push(edges, nodes, routes_to_remove):
       edge.flow = 0
 
   nodes_with_positive_ef = [node for node in nodes[:-1] if ef(node) > 0]
+  print(nodes_with_positive_ef)
 
   while nodes_with_positive_ef:
     v = nodes_with_positive_ef.pop(0)
-    for edge in nodes.edges:
-      w = edge.node2
-      if v.height > w.height:
-        push(edge)
+    for edge in v.edges:
+      print(edge)
+      print(v)
+      if v == edge.node1:
+        w = edge.node2
       else:
-        relabel()
-    
+        w = edge.node1
+      print(w)
+      print(v.height, w.height)
+      if v.height > w.height:
+        push(v, w, edge)
+      else:
+        relabel(v)
+
     nodes_with_positive_ef = [node for node in nodes[:-1] if ef(node) > 0]
+    print(nodes_with_positive_ef)
   
-  return 0
-  
-
-def push(edge):
-  
+  return edges[0].flow
   
 
-def relabel(h, f, v):
-  
+def push(v, w, edge):
+  if edge.node1 == v:
+    delta = min(ef(v), edge.capacity - edge.flow)
+    edge.flow += delta
+  else: 
+    delta = min(ef(v), edge.flow)
+    edge.flow -= delta
+
+def relabel(v):
+  v.height += 1
       
 def ef(node):
   sum = 0
@@ -92,8 +105,6 @@ def ef(node):
     else:
       sum += edge.flow
   return sum
-
-  
   
 
 main()
