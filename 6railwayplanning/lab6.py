@@ -32,14 +32,15 @@ def parse():
   nodes = []
   for i in range(nbr_of_edges):
     u, v, c = map(int, inp[i].split())
-    if u not in [node.label for node in nodes]:
-      node1 = Node(u)
-    else:
-      node1 = nodes[u]
-    if v not in [node.label for node in nodes]:
-      node2 = Node(v)
-    else:
-      node2 = nodes[v]
+    
+    node1 = Node(u)
+    node2 = Node(v)
+    for i in range(len(nodes)):
+      if nodes[i].label == u:
+        node1 = nodes[i]
+      if nodes[i].label == v:
+        node2 = nodes[i]
+        
     edge = Edge(node1, node2, c)
     node1.edges.append(edge)
     node2.edges.append(edge)
@@ -51,6 +52,7 @@ def parse():
   routes_to_remove = []
   for i in range(nbr_of_edges, nbr_of_edges + nbr_of_routes):
     routes_to_remove.append(int(inp[i]))
+  nodes.sort(key=lambda n: n.label)
   return edges, nodes, routes_to_remove
 
 def preflow_push(edges, nodes, routes_to_remove):
@@ -60,7 +62,6 @@ def preflow_push(edges, nodes, routes_to_remove):
 
   for edge in nodes[0].edges:
     edge.flow = edge.capacity
-
   for edge in edges:
     if edge.node1.label != nodes[0].label and edge.node2.label != nodes[0].label:
       edge.flow = 0
@@ -69,19 +70,30 @@ def preflow_push(edges, nodes, routes_to_remove):
 
   while nodes_with_positive_ef:
     v = nodes_with_positive_ef.pop(0)
-    for edge in v.edges:
-      print("edge", edge)
+    while ef(v) > 0:
+      seen = []
       if v.label == edge.node1.label:
         w = edge.node2
       else:
         w = edge.node1
       if v.height > w.height:
-        print("v och w innan push", v.label, w.label)
         push(v, w, edge)
       else:
-        print("v och w innan relabel", v.label, w.label)
         relabel(v)
     nodes_with_positive_ef = [node for node in nodes[:-1] if ef(node) > 0]
+    # for edge in v.edges:
+    #   if v.label == edge.node1.label:
+    #     w = edge.node2
+    #   else:
+    #     w = edge.node1
+    #   if v.height > w.height:
+    #     print("push", v)
+    #     push(v, w, edge)
+    #     nodes_with_positive_ef = [node for node in nodes[:-1] if ef(node) > 0]
+    #     break
+    #   else:
+    #     relabel(v)
+    #nodes_with_positive_ef = [node for node in nodes[:-1] if ef(node) > 0]
 
   res = 0
   for edge in nodes[0].edges:
@@ -90,12 +102,21 @@ def preflow_push(edges, nodes, routes_to_remove):
   
 
 def push(v, w, edge):
+  print("I push:", edge)
   if edge.node1.label == v.label:
     delta = min(ef(v), edge.capacity - edge.flow)
     edge.flow += delta
+    if abs(edge.flow) > edge.capacity:
+      edge.flow = edge.capacity
+      print("edge.flow oka", edge.flow)
   else: 
     delta = min(ef(v), edge.flow)
     edge.flow -= delta
+    if abs(edge.flow) > edge.capacity:
+      edge.flow = -edge.capacity
+      print("edge.flow minska", edge.flow)
+  print("Kant efter push:", edge)
+  print("ef for v", ef(v))
 
 def relabel(v):
   v.height += 1
