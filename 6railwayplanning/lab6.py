@@ -8,7 +8,7 @@ class Edge:
     self.flow = 0
     self.activated = False
   
-  def __str__(self):
+  def __repr__(self):
     return "Node1: {} Node2: {} capacity: {} flow: {} activated: {}".format(self.node1.label, self.node2.label, self.capacity, self.flow, self.activated)
     
 class Node:
@@ -17,7 +17,7 @@ class Node:
     self.height = 0
     self.edges = []
 
-  def __str__(self):
+  def __repr__(self):
     return "Node: {}, Height: {}".format(self.label, self.height)
 
 def main():
@@ -32,8 +32,14 @@ def parse():
   nodes = []
   for i in range(nbr_of_edges):
     u, v, c = map(int, inp[i].split())
-    node1 = Node(u)
-    node2 = Node(v)
+    if u not in [node.label for node in nodes]:
+      node1 = Node(u)
+    else:
+      node1 = nodes[u]
+    if v not in [node.label for node in nodes]:
+      node2 = Node(v)
+    else:
+      node2 = nodes[v]
     edge = Edge(node1, node2, c)
     node1.edges.append(edge)
     node2.edges.append(edge)
@@ -48,10 +54,8 @@ def parse():
   return edges, nodes, routes_to_remove
 
 def preflow_push(edges, nodes, routes_to_remove):
-  edges[0].flow = edges[0].capacity
-
   nodes[0].height = len(nodes)
-  for node in nodes[:1]:
+  for node in nodes[1:]:
     node.height = 0
 
   for edge in nodes[0].edges:
@@ -62,32 +66,31 @@ def preflow_push(edges, nodes, routes_to_remove):
       edge.flow = 0
 
   nodes_with_positive_ef = [node for node in nodes[:-1] if ef(node) > 0]
-  print(nodes_with_positive_ef)
 
   while nodes_with_positive_ef:
     v = nodes_with_positive_ef.pop(0)
     for edge in v.edges:
-      print(edge)
-      print(v)
-      if v == edge.node1:
+      print("edge", edge)
+      if v.label == edge.node1.label:
         w = edge.node2
       else:
         w = edge.node1
-      print(w)
-      print(v.height, w.height)
       if v.height > w.height:
+        print("v och w innan push", v.label, w.label)
         push(v, w, edge)
       else:
+        print("v och w innan relabel", v.label, w.label)
         relabel(v)
-
     nodes_with_positive_ef = [node for node in nodes[:-1] if ef(node) > 0]
-    print(nodes_with_positive_ef)
-  
-  return edges[0].flow
+
+  res = 0
+  for edge in nodes[0].edges:
+    res += edge.flow
+  return sum([edge.flow for edge in nodes[0].edges])
   
 
 def push(v, w, edge):
-  if edge.node1 == v:
+  if edge.node1.label == v.label:
     delta = min(ef(v), edge.capacity - edge.flow)
     edge.flow += delta
   else: 
@@ -100,7 +103,7 @@ def relabel(v):
 def ef(node):
   sum = 0
   for edge in node.edges:
-    if edge.node1 == node:
+    if edge.node1.label == node.label:
       sum -= edge.flow
     else:
       sum += edge.flow
