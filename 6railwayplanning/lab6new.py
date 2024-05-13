@@ -61,11 +61,8 @@ def preflow_push(capacity):
     ef[v] += delta
     
   def relabel(u):
-    min_height = float('inf')
-    for v in range(n):
-      if capacity[u][v] - F[u][v] > 0:
-        min_height = min(min_height, height[v])
-        height[u] = min_height + 1
+    height[u] += 1
+
         
   def visit_neighbors(u):
     while ef[u] > 0:
