@@ -1,32 +1,35 @@
 import sys
+import time
 
 def main():
   capacity, routes, routes_to_remove, min_capacity = parse()
-  index = 0
-  current_capacity = 0
-  while True:
-    current_capacity = preflow_push(capacity)
-    u, v = routes[routes_to_remove[index]]
-    capacity[u][v] = 0
-    capacity[v][u] = 0
-    if preflow_push(capacity) < min_capacity:
-      break
-    index += 1
-  res = str(index) + ' ' + str(current_capacity)
-  print(res)
+  findX(capacity, routes, routes_to_remove, min_capacity)
   
-def route_remover(capacity, min_capacity):
-  while preflow_push(capacity) > min_capacity:
-    pog = 0
 
-def calculate_capacity(routes, routes_to_remove, capacity, lower_bound, upper_bound, min_capacity):
-  new_capacity = capacity.copy()
-  for i in range(lower_bound, upper_bound):
-    u, v = routes[routes_to_remove[i]]
-    new_capacity[u][v] = 0
-    new_capacity[v][u] = 0
-  return new_capacity
+def findX(capacity, routes, routes_to_remove, min_capacity):
+  
+  start = 0
+  end = len(routes_to_remove)
+  mid = (start + end) // 2 
+  remove_counter = 0
+  current_capacity = 0
+  while(start <= end or current_capacity < min_capacity):
+    mid = (start + end) // 2 
+    capacity_copy = [row[:] for row in capacity]
+    for i in range(mid):
+      u, v = routes[routes_to_remove[i]]
+      capacity_copy[u][v] = 0
+      capacity_copy[v][u] = 0
+      
+    current_capacity = preflow_push(capacity_copy)
     
+    if current_capacity >= min_capacity:
+      start = mid + 1
+    else:
+      remove_counter = mid
+      end = mid - 1
+  res = str(remove_counter - 1) + ' ' + str(current_capacity)
+  print(res)
   
 
 def parse():
@@ -97,7 +100,5 @@ def preflow_push(capacity):
       
   return sum(F[0])
         
-
-
 
 main()
