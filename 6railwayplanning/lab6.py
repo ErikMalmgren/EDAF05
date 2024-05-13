@@ -1,4 +1,5 @@
 import sys
+import time
 
 class Edge:
   def  __init__(self, node1, node2, capacity):
@@ -65,40 +66,47 @@ def preflow_push(edges, nodes, routes_to_remove):
   for edge in edges:
     if edge.node1.label != nodes[0].label and edge.node2.label != nodes[0].label:
       edge.flow = 0
-
-  nodes_with_positive_ef = [node for node in nodes[:-1] if ef(node) > 0]
-
-  while nodes_with_positive_ef:
-    v = nodes_with_positive_ef.pop(0)
-    while ef(v) > 0:
-      seen = []
-      if v.label == edge.node1.label:
-        w = edge.node2
-      else:
-        w = edge.node1
-      if v.height > w.height:
-        push(v, w, edge)
-      else:
-        relabel(v)
-    nodes_with_positive_ef = [node for node in nodes[:-1] if ef(node) > 0]
-    # for edge in v.edges:
-    #   if v.label == edge.node1.label:
-    #     w = edge.node2
-    #   else:
-    #     w = edge.node1
-    #   if v.height > w.height:
-    #     print("push", v)
-    #     push(v, w, edge)
-    #     nodes_with_positive_ef = [node for node in nodes[:-1] if ef(node) > 0]
-    #     break
-    #   else:
-    #     relabel(v)
-    #nodes_with_positive_ef = [node for node in nodes[:-1] if ef(node) > 0]
+  
+  p = 0
+  node_list = nodes[1:-1]
+  while p < len(node_list):
+    u = node_list[p]
+    old_height = u.height
+    discharge(u)
+    if u.height > old_height:
+      node_list.insert(0, node_list.pop(p))
+      p = 0
+    else:
+      p += 1
 
   res = 0
   for edge in nodes[0].edges:
     res += edge.flow
   return sum([edge.flow for edge in nodes[0].edges])
+
+
+def discharge(node):
+  n = len(node.edges)
+  i = 0
+  print(node)
+  while ef(node) > 0:
+    time.sleep(1)
+    print("i och n,", i, n)
+    edge = node.edges[i]
+    if edge.node1.label == node.label:
+      v = edge.node2
+    else:
+      v = edge.node1
+    if edge.capacity - edge.flow > 0 and node.height > v.height:
+      push(node, v, edge)
+    else:
+      i += 1
+    if i == n:
+      relabel(node)
+      i = 0
+      
+    
+
   
 
 def push(v, w, edge):
@@ -117,6 +125,7 @@ def push(v, w, edge):
       print("edge.flow minska", edge.flow)
   print("Kant efter push:", edge)
   print("ef for v", ef(v))
+  print("--------------")
 
 def relabel(v):
   v.height += 1
@@ -124,7 +133,7 @@ def relabel(v):
 def ef(node):
   sum = 0
   for edge in node.edges:
-    if edge.node1.label == node.label:
+    if node.label == edge.node1.label:
       sum -= edge.flow
     else:
       sum += edge.flow
