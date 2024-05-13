@@ -1,5 +1,5 @@
 import sys
-import time
+from collections import deque
 
 def main():
   capacity, routes, routes_to_remove, min_capacity = parse()
@@ -12,7 +12,6 @@ def findX(capacity, routes, routes_to_remove, min_capacity):
   end = len(routes_to_remove)
   mid = (start + end) // 2 
   remove_counter = 0
-  current_capacity = 0
   while(start <= end or current_capacity < min_capacity):
     mid = (start + end) // 2 
     capacity_copy = [row[:] for row in capacity]
@@ -65,19 +64,18 @@ def preflow_push(capacity):
     
   def relabel(u):
     height[u] += 1
-
-        
+    
   def visit_neighbors(u):
     while ef[u] > 0:
-      if seen[u] < n:
-        v = seen[u]
-        if capacity[u][v] - F[u][v] > 0 and height[u] > height[v]:
-          push(u, v)
-        else:
-          seen[u] += 1
+      if capacity[u][seen[u]] - F[u][seen[u]] > 0 and height[u] > height[seen[u]]:
+        push(u, seen[u])
+      if seen[u] < n - 1:
+        seen[u] += 1
       else:
         relabel(u)
         seen[u] = 0
+        nodes.append(u)
+
   
   height[0] = n
   ef[0] = float('inf')
@@ -85,20 +83,15 @@ def preflow_push(capacity):
     push(0, v)
     
   p = 0
-  nodes = [i for i in range(1, n - 1)]
+  nodes = deque(range(1, n - 1))
   
-  p = 0
-  while p < len(nodes):
-    u = nodes[p]
+  while nodes:
+    u = nodes.popleft()
     old_height = height[u]
     visit_neighbors(u)
     if height[u] > old_height:
-      nodes.insert(0, nodes.pop(p))
-      p = 0
-    else:
-      p += 1
-      
-  return sum(F[0])
-        
+      nodes.appendleft(u)
+
+  return sum(F[0])        
 
 main()
