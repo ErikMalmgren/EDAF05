@@ -1,45 +1,31 @@
 import sys
-import time
 
 def main():
   capacity, routes, routes_to_remove, min_capacity = parse()
+  index = 0
   current_capacity = 0
-  new_capacity = 0
-  start_point = 0
-  end_point = len(routes_to_remove)//2
-  capacity_copy = list(capacity)
-
   while True:
-    current_capacity = preflow_push(capacity_copy)
-    capacity_copy = list(capacity)
-    for i in range(start_point, end_point):
-      u, v = routes[routes_to_remove[i]]
-      capacity_copy[u][v] = 0
-      capacity_copy[v][u] = 0
-      
-    new_capacity = preflow_push(capacity_copy)
-    if new_capacity < min_capacity: # mer kapacitet
-      end_point = end_point // 2
-    else:
-      end_point = end_point + ((len(routes_to_remove) - end_point) // 2)
-    print(current_capacity, new_capacity, min_capacity)
-    time.sleep(1)
-    # if new_capacity < min_capacity:
-    #   break
-  res = str(end_point) + ' ' + str(current_capacity)
+    current_capacity = preflow_push(capacity)
+    u, v = routes[routes_to_remove[index]]
+    capacity[u][v] = 0
+    capacity[v][u] = 0
+    if preflow_push(capacity) < min_capacity:
+      break
+    index += 1
+  res = str(index) + ' ' + str(current_capacity)
   print(res)
   
-# def route_remover(capacity, min_capacity):
-#   while preflow_push(capacity) > min_capacity:
-#     pog = 0
+def route_remover(capacity, min_capacity):
+  while preflow_push(capacity) > min_capacity:
+    pog = 0
 
-# def calculate_capacity(routes, routes_to_remove, capacity, lower_bound, upper_bound, min_capacity):
-#   new_capacity = capacity.copy()
-#   for i in range(lower_bound, upper_bound):
-#     u, v = routes[routes_to_remove[i]]
-#     new_capacity[u][v] = 0
-#     new_capacity[v][u] = 0
-#   return new_capacity
+def calculate_capacity(routes, routes_to_remove, capacity, lower_bound, upper_bound, min_capacity):
+  new_capacity = capacity.copy()
+  for i in range(lower_bound, upper_bound):
+    u, v = routes[routes_to_remove[i]]
+    new_capacity[u][v] = 0
+    new_capacity[v][u] = 0
+  return new_capacity
     
   
 
